@@ -1,0 +1,10 @@
+<Page xmlns="http://www.nativescript.org/tns.xsd" loaded="pageLoaded">
+  <GridLayout>
+    <StackLayout>
+      <Label text="Your weight is" />
+      <Label text="{{ weight, weight ? weight + ' pounds' : '' }}" />
+    </StackLayout>
+
+    <ActivityIndicator busy="{{ isLoading }}" />
+  </GridLayout>
+</Page>
