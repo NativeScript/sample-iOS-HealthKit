@@ -31,6 +31,9 @@ function load(viewModel: observableModule.Observable) {
                     var weight = result.doubleValueForUnit(HKUnit.poundUnit());
                     viewModel.set("weight", weight);
                 }
+                else {
+                    alert(error);
+                }
 
                 viewModel.set("isLoading", false);
             }); 
@@ -52,8 +55,9 @@ function first(healthStore: HKHealthStore, quantityType: HKQuantityType, callbac
                 callback(null, "No data");
             }
         }
-
-        callback(null, error);
+        else {
+            callback(null, "No data");
+        }
     });
 
     healthStore.executeQuery(query);
