@@ -1,8 +1,8 @@
 # Using the HealthKit SDK with NativeScript
 This sample shows a simple use of the [iOS HealthKit APIs](https://developer.apple.com/healthkit/).
 
-It is a very simple scenario but should help you out if you want to work with this SDK.
-The most important part of the sample is located in [main-page.js](https://github.com/NativeScript/sample-HealthKit/tree/master/app/components/main) file. Here is a snippet of code used to initialize the HealtKit SKD
+It is a very simple scenario but should help you out to get started if you want to work with this SDK.
+The most important part of the sample is located in [main-page.js](https://github.com/NativeScript/sample-HealthKit/tree/master/app/components/main) file. Here is a snippet of code used to initialize the HealtKit SDK
 ```javascript
 if (HKHealthStore.isHealthDataAvailable()) {
         var weightType = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMass);
