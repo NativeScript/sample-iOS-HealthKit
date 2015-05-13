@@ -1,64 +1,79 @@
 ﻿import observableModule = require("data/observable");
 
 import pageModule = require("ui/page");
+import textFieldModule = require("ui/text-field");
 
+var page: pageModule.Page;
+var healthStore: HKHealthStore;
+var weightType: HKQuantityType;
 export function pageLoaded(args: observableModule.EventData) {
-    var page = <pageModule.Page>args.object;
-    var vm = new observableModule.Observable();
-    vm.set("isLoading", true);
-    load(vm);
-    page.bindingContext = vm;
+    page = <pageModule.Page>args.object;
+
+    weightType = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMass);
+    healthStore = HKHealthStore.new();
+
+    requestPermissions(healthStore, [weightType], [weightType]);
 }
 
-function load(viewModel: observableModule.Observable) {
-    viewModel.set("isLoading", true);
-    if (HKHealthStore.isHealthDataAvailable()) {
-        var weightType = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMass);
-        var writeDataTypes = NSSet.setWithObject(weightType);
-        var readDataTypes = NSSet.setWithObject(weightType);
+export function getWeightButtonTap(args: observableModule.EventData) {
+    getHealthKitValue(healthStore, weightType,(weight) => {
+        alert("Your weight is " + weight.doubleValueForUnit(HKUnit.poundUnit()) + " pounds");
+    });
+}
+export function setWeightButtonTap(args: observableModule.EventData) {
+    var textField = <textFieldModule.TextField>page.getViewById("weightTextView");
+    setHalthKitValue(healthStore, weightType, HKQuantity.quantityWithUnitDoubleValue(HKUnit.poundUnit(), +textField.text));
+}
 
-        var healthStore = HKHealthStore.new();
-        healthStore.requestAuthorizationToShareTypesReadTypesCompletion(readDataTypes, readDataTypes,(success, error) => {
-            if (!success) {
-                alert("ERROR");
-                viewModel.set("isLoading", false);
-
-                return;
-            }
-
-            first(healthStore, weightType,(result, error) => {
-                if (result) {
-                    var weight = result.doubleValueForUnit(HKUnit.poundUnit());
-                    viewModel.set("weight", weight);
-                }
-                else {
-                    alert(error);
-                }
-
-                viewModel.set("isLoading", false);
-            }); 
-        });
+function requestPermissions(healthStore: HKHealthStore, writeTypes: HKQuantityType[], readTypes: HKQuantityType[]) {
+    var writeDataTypes = NSSet.new();
+    for (var i = 0; i < writeTypes.length; i++) {
+        writeDataTypes = writeDataTypes.setByAddingObject(writeTypes[i]);
     }
+
+    var readDataTypes = NSSet.new();
+    for (var i = 0; i < readTypes.length; i++) {
+        readDataTypes = readDataTypes.setByAddingObject(readTypes[i]);
+    }
+
+    healthStore.requestAuthorizationToShareTypesReadTypesCompletion(writeDataTypes, readDataTypes,(success, error) => {
+        if (!success) {
+        }
+    });
 }
 
-function first(healthStore: HKHealthStore, quantityType: HKQuantityType, callback: (result: HKQuantity, error) => void) {
-    var timeSortDescriptor = NSSortDescriptor.alloc().initWithKeyAscending(HKSampleSortIdentifierEndDate, false);
-    var sortDescriptors = NSArray.arrayWithObject(timeSortDescriptor);
+function getHealthKitValue(healthStore: HKHealthStore, quantityType: HKQuantityType, callback: (result) => void) {
+    var endDateSortDescriptor = NSSortDescriptor.alloc().initWithKeyAscending(HKSampleSortIdentifierEndDate, false);
+    var sortDescriptors = NSArray.arrayWithObject(endDateSortDescriptor);
     var query = HKSampleQuery.alloc().initWithSampleTypePredicateLimitSortDescriptorsResultsHandler(quantityType, null, 1, sortDescriptors,(query, results, error) => {
         if (results) {
             var quantitySample = <HKQuantitySample>results.firstObject;
             if (quantitySample) {
-                var quantity = quantitySample.quantity;
-                callback(quantity, error);
+                callback(quantitySample.quantity);
             }
             else {
-                callback(null, "No data");
+                alert("Error!");
             }
         }
         else {
-            callback(null, "No data");
+            alert("Error!");
         }
     });
 
     healthStore.executeQuery(query);
+}
+
+function setHalthKitValue(healthStore: HKHealthStore, quantityType: HKQuantityType, quantity: HKQuantity) {
+    return new Promise<boolean>((resolve, reject) => {
+        var now = NSDate.new();
+        var sample = HKQuantitySample.quantitySampleWithTypeQuantityStartDateEndDate(quantityType, quantity, now, now);
+        healthStore.saveObjectWithCompletion(sample,(success, error) => {
+            if (success) {
+                alert("Done!");
+            }
+            else {
+                alert("Error!");
+            }
+        });
+    });
 }

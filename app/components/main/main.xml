@@ -1,10 +1,9 @@
 <Page xmlns="http://www.nativescript.org/tns.xsd" loaded="pageLoaded">
   <GridLayout>
     <StackLayout>
-      <Label text="Your weight is" />
-      <Label text="{{ weight, weight ? weight + ' pounds' : '' }}" />
+      <Button text="Get Weight" tap="getWeightButtonTap" />
+      <TextField id="weightTextView" hint="enter weight" keyboardType="number" />
+      <Button text="Set Weight" tap="setWeightButtonTap" />
     </StackLayout>
-
-    <ActivityIndicator busy="{{ isLoading }}" />
   </GridLayout>
 </Page>
