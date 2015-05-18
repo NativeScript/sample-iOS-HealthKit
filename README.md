@@ -15,6 +15,7 @@ if (HKHealthStore.isHealthDataAvailable()) {
 ```
 
 To run this example you must enable HealthKit in you xcode project:
+
 1. Add ios platform to the application
 2. Open the .xcodeproject (<MyProject>/platforms/ios) in xCode.
 3. Follow the steps from [Adding Capabilities article](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html) to add HealthKit.
