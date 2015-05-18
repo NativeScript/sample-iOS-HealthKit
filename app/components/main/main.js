@@ -9,25 +9,26 @@ function pageLoaded(args) {
 }
 exports.pageLoaded = pageLoaded;
 function getWeightButtonTap(args) {
+    hideKeyboard();
     getHealthKitValue(healthStore, weightType, function (weight) {
         alert("Your weight is " + weight.doubleValueForUnit(HKUnit.poundUnit()) + " pounds");
     });
 }
 exports.getWeightButtonTap = getWeightButtonTap;
 function setWeightButtonTap(args) {
+    hideKeyboard();
     var textField = page.getViewById("weightTextView");
-    setHalthKitValue(healthStore, weightType, HKQuantity.quantityWithUnitDoubleValue(HKUnit.poundUnit(), +textField.text));
+    var weight = parseFloat(textField.text);
+    setHalthKitValue(healthStore, weightType, HKQuantity.quantityWithUnitDoubleValue(HKUnit.poundUnit(), weight));
 }
 exports.setWeightButtonTap = setWeightButtonTap;
+function hideKeyboard() {
+    var textField = page.getViewById("weightTextView");
+    textField.ios.resignFirstResponder();
+}
 function requestPermissions(healthStore, writeTypes, readTypes) {
-    var writeDataTypes = NSSet.new();
-    for (var i = 0; i < writeTypes.length; i++) {
-        writeDataTypes = writeDataTypes.setByAddingObject(writeTypes[i]);
-    }
-    var readDataTypes = NSSet.new();
-    for (var i = 0; i < readTypes.length; i++) {
-        readDataTypes = readDataTypes.setByAddingObject(readTypes[i]);
-    }
+    var writeDataTypes = NSSet.setWithArray(writeTypes);
+    var readDataTypes = NSSet.setWithArray(readTypes);
     healthStore.requestAuthorizationToShareTypesReadTypesCompletion(writeDataTypes, readDataTypes, function (success, error) {
         if (!success) {
         }
@@ -35,8 +36,7 @@ function requestPermissions(healthStore, writeTypes, readTypes) {
 }
 function getHealthKitValue(healthStore, quantityType, callback) {
     var endDateSortDescriptor = NSSortDescriptor.alloc().initWithKeyAscending(HKSampleSortIdentifierEndDate, false);
-    var sortDescriptors = NSArray.arrayWithObject(endDateSortDescriptor);
-    var query = HKSampleQuery.alloc().initWithSampleTypePredicateLimitSortDescriptorsResultsHandler(quantityType, null, 1, sortDescriptors, function (query, results, error) {
+    var query = HKSampleQuery.alloc().initWithSampleTypePredicateLimitSortDescriptorsResultsHandler(quantityType, null, 1, [endDateSortDescriptor], function (query, results, error) {
         if (results) {
             var quantitySample = results.firstObject;
             if (quantitySample) {
@@ -53,17 +53,15 @@ function getHealthKitValue(healthStore, quantityType, callback) {
     healthStore.executeQuery(query);
 }
 function setHalthKitValue(healthStore, quantityType, quantity) {
-    return new Promise(function (resolve, reject) {
-        var now = NSDate.new();
-        var sample = HKQuantitySample.quantitySampleWithTypeQuantityStartDateEndDate(quantityType, quantity, now, now);
-        healthStore.saveObjectWithCompletion(sample, function (success, error) {
-            if (success) {
-                alert("Done!");
-            }
-            else {
-                alert("Error!");
-            }
-        });
+    var now = NSDate.new();
+    var sample = HKQuantitySample.quantitySampleWithTypeQuantityStartDateEndDate(quantityType, quantity, now, now);
+    healthStore.saveObjectWithCompletion(sample, function (success, error) {
+        if (success) {
+            alert("Done!");
+        }
+        else {
+            alert("Error!");
+        }
     });
 }
 //# sourceMappingURL=main.js.map
