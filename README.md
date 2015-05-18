@@ -15,9 +15,9 @@ if (HKHealthStore.isHealthDataAvailable()) {
 ```
 
 To run this example you must enable HealthKit in you xcode project:
-	1. Add ios platform to the application
-	2. Open the .xcodeproject (<MyProject>/platforms/ios) in xCode.
-	3. Follow the steps from [Adding Capabilities article](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html) to add HealthKit.
+1. Add ios platform to the application
+2. Open the .xcodeproject (<MyProject>/platforms/ios) in xCode.
+3. Follow the steps from [Adding Capabilities article](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html) to add HealthKit.
 
 If you have any questions about the sample please open an issue in our [issues repo](http://github.com/nativescript/nativescript/issues) or post directly in [NativeScript forums](https://groups.google.com/forum/#!forum/nativescript).
 
