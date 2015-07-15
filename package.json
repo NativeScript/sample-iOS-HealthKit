@@ -1,0 +1,11 @@
+{
+	"nativescript": {
+		"id": "org.nativescript.sampleFit",
+		"tns-ios": {
+			"version": "1.1.2"
+		},
+		"tns-android": {
+			"version": "1.1.0"
+		}
+	}
+}
