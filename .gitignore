@@ -9,7 +9,6 @@
 !everlive.js
 
 /platforms/
-/app/tns_modules/
 /external/
 /lib/
 *.tgz
