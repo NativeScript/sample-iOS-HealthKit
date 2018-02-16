@@ -22,5 +22,5 @@ To run this example you must enable HealthKit in you xCode project:
 4. Follow the steps from [Adding Capabilities article](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html) to add HealthKit.
 5. Run the project from Xcode or run the following command: *tns run ios --emulator* to check how the project works.
 
-If you have any questions about the sample please open an issue in our [issues repo](http://github.com/nativescript/nativescript/issues) or post directly in [NativeScript forums](https://groups.google.com/forum/#!forum/nativescript).
+If you have any questions about the sample please open an issue in our [issues repo](http://github.com/nativescript/nativescript/issues) or post directly in [NativeScript forums](https://discourse.nativescript.org/).
 
